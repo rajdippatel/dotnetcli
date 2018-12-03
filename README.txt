@@ -1,6 +1,6 @@
 For more information on this project, please see the following url:
 
-http://dotnetcli.sf.net/
+https://wiki.apache.org/commons/CLI/dotnet
 
 Thanks!
 
