@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "net.sf.dotnetcli", "src\net.sf.dotnetcli\net.sf.dotnetcli.csproj", "{6DCACE01-FE7C-4EA3-8699-48933E3FC5D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3AA39C47-A801-46D1-88EE-56CA4CC8A9F7}"
+	ProjectSection(SolutionItems) = preProject
+		build.bat = build.bat
+		LICENSE.txt = LICENSE.txt
+		nant.build = nant.build
+		README.txt = README.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "conf", "conf", "{290FF32A-5C30-4F50-A04D-C036387411DA}"
+	ProjectSection(SolutionItems) = preProject
+		conf\default.properties = conf\default.properties
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "net.sf.dotnetcli.test", "test\net.sf.dotnetcli.test\net.sf.dotnetcli.test.csproj", "{F976A096-31CE-41E6-91DE-13A2631C10A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6DCACE01-FE7C-4EA3-8699-48933E3FC5D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DCACE01-FE7C-4EA3-8699-48933E3FC5D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DCACE01-FE7C-4EA3-8699-48933E3FC5D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DCACE01-FE7C-4EA3-8699-48933E3FC5D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F976A096-31CE-41E6-91DE-13A2631C10A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F976A096-31CE-41E6-91DE-13A2631C10A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F976A096-31CE-41E6-91DE-13A2631C10A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F976A096-31CE-41E6-91DE-13A2631C10A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{290FF32A-5C30-4F50-A04D-C036387411DA} = {3AA39C47-A801-46D1-88EE-56CA4CC8A9F7}
+	EndGlobalSection
+EndGlobal

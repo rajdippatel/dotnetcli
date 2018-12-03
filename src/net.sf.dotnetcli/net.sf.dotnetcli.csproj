@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6DCACE01-FE7C-4EA3-8699-48933E3FC5D3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>net.sf.dotnetcli</RootNamespace>
+    <AssemblyName>net.sf.dotnetcli</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\net.sf.dotnetcli.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="nant.build" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\AlreadySelectedException.cs" />
+    <Compile Include="src\BasicParser.cs" />
+    <Compile Include="src\BidirectionalEnumerator.cs" />
+    <Compile Include="src\CommandLine.cs" />
+    <Compile Include="src\GnuParser.cs" />
+    <Compile Include="src\HelpFormatter.cs" />
+    <Compile Include="src\ICommandLineParser.cs" />
+    <Compile Include="src\JavaPorts.cs" />
+    <Compile Include="src\MissingArgumentException.cs" />
+    <Compile Include="src\MissingOptionException.cs" />
+    <Compile Include="src\Option.cs" />
+    <Compile Include="src\OptionBuilder.cs" />
+    <Compile Include="src\OptionGroup.cs" />
+    <Compile Include="src\Options.cs" />
+    <Compile Include="src\OptionValidator.cs" />
+    <Compile Include="src\ParseException.cs" />
+    <Compile Include="src\Parser.cs" />
+    <Compile Include="src\PatternOptionBuilder.cs" />
+    <Compile Include="src\PosixParser.cs" />
+    <Compile Include="src\TypeHandler.cs" />
+    <Compile Include="src\UnrecognizedOptionException.cs" />
+    <Compile Include="src\Util.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

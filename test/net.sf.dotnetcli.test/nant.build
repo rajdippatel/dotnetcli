@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+	NOTE 1
+	make sure to include the default namespace so that visual studio
+	will turn on intellisense for this nant build file 
+	
+	NOTE 2
+	for non .NET developers: for all intents and purpose a solution in 
+	VisualStudio (VS) is the same thing as a top-level project in most other
+	languages, and VS project is the same as a package. in order to make it 
+	easier for communicate amonst .NET developers working with both VS and
+	NAnt, this NAnt build file will refer to the top-level project as a solution
+	and packages as projects.
+-->
+<project name="net.sf.dotnetcli.test" default="all" basedir="."
+		 xmlns="http://nant.sf.net/nightly/2008-06-02-0.86/nant.xsd">
+
+	<!-- get global properties -->
+	<include buildfile="../../conf/default.properties" />
+
+	<!-- do it all: compile, test -->
+	<target name="all">
+		<call target="compile" cascade="false"/>
+		<call target="test" cascade="false"/>
+	</target>
+
+	<!-- clean this project -->
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${docs}" />
+	</target>
+
+	<!-- init this project -->
+	<target name="init">
+		<mkdir dir="${build}" />
+		<mkdir dir="${docs}" />
+	</target>
+
+	<!-- compile this project -->
+	<target name="compile">
+		<call target="compile.main" cascade="false"/>
+	</target>
+
+	<!-- run unit tests -->
+	<target name="test" depends="compile">
+		<copy todir="${build}">
+			<fileset>
+				<include name="${proj.srcproj.output}" />
+				<include name="${lib.nunit}" />
+				<patternset refid="lib.default" />
+			</fileset>
+		</copy>
+		<nunit2 haltonfailure="true" failonerror="true">
+			<formatter type="Plain" />
+			<test assemblyname="${build}/${proj.name.unix}-${proj.version}.dll">
+				<categories>
+					<exclude name="NotWorking" />
+				</categories>
+			</test>
+		</nunit2>
+	</target>
+
+	<!-- compile the main assembly if it is not up to date -->
+	<target name="compile.main" depends="init">
+
+		<!-- check to see if the source project is up to date -->
+		<if test="${not file::exists(proj.srcproj.output)}">
+			<echo message="Compiling source project"/>
+
+			<!-- the path to the source project's  build file-->
+			<property name="test.srcproj.buildfile" value="${proj.srcproj.path}/nant.build"/>
+
+			<if test="${not file::exists(test.srcproj.buildfile)}">
+				<echo message="Source project build file does not exist at ${test.srcproj.buildfile}"/>
+			</if>
+
+			<if test="${file::exists(test.srcproj.buildfile)}">
+				<!-- go ahead and compile the source project -->
+				<nant buildfile="${test.srcproj.buildfile}" target="compile"/>
+			</if>
+		</if>
+
+		<!-- create the assembly information file -->
+		<asminfo output=
+				 "${src}/AssemblyInfo.cs"
+				 language="CSharp">
+			<imports>
+				<import namespace="System"/>
+				<import namespace="System.Reflection"/>
+				<import namespace="System.Runtime.InteropServices"/>
+			</imports>
+			<attributes>
+				<attribute type="ComVisibleAttribute"
+						   value="false" />
+				<attribute type="CLSCompliantAttribute"
+						   value="true" />
+				<attribute type="AssemblyVersionAttribute"
+						   value="${proj.version}" />
+				<attribute type="AssemblyTitleAttribute"
+						   value="${sol.title}" />
+				<attribute type="AssemblyCopyrightAttribute"
+						   value="Copyright © ${proj.author} ${datetime::get-year( datetime::now() )}" />
+			</attributes>
+		</asminfo>
+
+
+		<!-- compile the main assembly -->
+		<csc target="library"
+			 output="${build}/${proj.name.unix}-${proj.version}.dll"
+			 doc="${docs}/${proj.name.unix}-${proj.version}.xml"
+			 warninglevel="0">
+			<sources>
+				<include name="src/**/*.cs" />
+			</sources>
+			<references>
+				<!-- 
+					if this is being run on a build server then reference
+					the nunit files on the server, otherwise reference the files
+					from the tools directory
+				-->
+				<include name="${proj.srcproj.output}"/>
+				<patternset refid="lib.default" />
+				<include name="${lib.nunit}"/>
+			</references>
+		</csc>
+	</target>
+
+</project>

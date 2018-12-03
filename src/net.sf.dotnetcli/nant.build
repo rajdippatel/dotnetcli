@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+	NOTE 1
+	make sure to include the default namespace so that visual studio
+	will turn on intellisense for this nant build file 
+	
+	NOTE 2
+	for non .NET developers: for all intents and purpose a solution in 
+	VisualStudio (VS) is the same thing as a top-level project in most other
+	languages, and VS project is the same as a package. in order to make it 
+	easier for communicate amonst .NET developers working with both VS and
+	NAnt, this NAnt build file will refer to the top-level project as a solution
+	and packages as projects.
+-->
+<project name="net.sf.dotnetcli" default="all" basedir="."
+		 xmlns="http://nant.sf.net/nightly/2008-06-02-0.86/nant.xsd">
+
+	<!-- get global properties -->
+	<include buildfile="../../conf/default.properties" />
+
+	<!-- do it all: compile, test, dist -->
+	<target name="all">
+		<call target="compile" cascade="false"/>
+		<call target="test" cascade="false"/>
+		<call target="dist" cascade="false"/>
+	</target>
+
+	<!-- clean this project -->
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${docs}" />
+		<delete dir="${dist}" />
+	</target>
+
+	<!-- init this project -->
+	<target name="init">
+		<mkdir dir="${build}" />
+		<mkdir dir="${docs}" />
+		<mkdir dir="${dist}" />
+	</target>
+
+	<!-- compile this project -->
+	<target name="compile">
+		<call target="compile.main" cascade="false"/>
+	</target>
+
+	<!-- run unit tests on this project -->
+	<target name="test">
+
+		<!-- the path to this project's unit test build file-->
+		<property name="compile.test.buildfile" value="../../test/${proj.name}.test/nant.build"/>
+
+		<if test="${not file::exists(compile.test.buildfile)}">
+			<echo message="Unit test build file does not exist at ${compile.test.buildfile}"/>
+		</if>
+
+		<if test="${file::exists(compile.test.buildfile)}">
+
+			<!-- go ahead and run this project's unit tests-->
+			<nant buildfile="${compile.test.buildfile}" target="test"/>
+
+		</if>
+
+	</target>
+
+	<!-- package this project's binary output for dist -->
+	<target name="dist" depends="compile">
+		<zip zipfile="${dist}/${proj.name.unix}-bin-${proj.version}.zip"
+			 ziplevel="9">
+			<fileset basedir="${build}"
+					 prefix="${proj.name.unix}-bin-${proj.version}">
+				<include name="${proj.name.unix}-${proj.version}.dll" />
+				<include name="../../../LICENSE.txt"/>
+				<include name="../../../README.txt"/>
+				<patternset refid="lib.default-for-zip" />
+			</fileset>
+		</zip>
+	</target>
+
+	<!-- compile the main assembly if it is not up to date -->
+	<target name="compile.main" depends="init">
+
+		<!-- create the assembly information file -->
+		<asminfo output=
+				 "${src}/AssemblyInfo.cs"
+				 language="CSharp">
+			<imports>
+				<import namespace="System"/>
+				<import namespace="System.Reflection"/>
+				<import namespace="System.Runtime.InteropServices"/>
+			</imports>
+			<attributes>
+				<attribute type="ComVisibleAttribute"
+						   value="false" />
+				<attribute type="CLSCompliantAttribute"
+						   value="true" />
+				<attribute type="AssemblyVersionAttribute"
+						   value="${proj.version}" />
+				<attribute type="AssemblyTitleAttribute"
+						   value="${sol.title}" />
+				<attribute type="AssemblyCopyrightAttribute"
+						   value="Copyright © ${proj.author} ${datetime::get-year( datetime::now() )}" />
+			</attributes>
+		</asminfo>
+
+		<!-- compile the main assembly -->
+		<csc target="library"
+			 output="${build}/${proj.name.unix}-${proj.version}.dll"
+			 doc="${docs}/${proj.name.unix}-${proj.version}.xml"
+			 warninglevel="0">
+			<sources>
+				<include name="${src}/**/*.cs" />
+			</sources>
+			<references>
+				<patternset refid="lib.default" />
+			</references>
+		</csc>
+	</target>
+
+</project>

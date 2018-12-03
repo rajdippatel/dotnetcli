@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+	NOTE 1
+	make sure to include the default namespace so that visual studio
+	will turn on intellisense for this nant build file 
+	
+	NOTE 2
+	for non .NET developers: for all intents and purpose a solution in 
+	VisualStudio (VS) is the same thing as a top-level project in most other
+	languages, and VS project is the same as a package. in order to make it 
+	easier for communicate amonst .NET developers working with both VS and
+	NAnt, this NAnt build file will refer to the top-level project as a solution
+	and packages as projects.
+-->
+<project name="dotnetcli" default="all" basedir="."
+		 xmlns="http://nant.sf.net/nightly/2008-06-02-0.86/nant.xsd">
+
+	<!-- get the default properties -->
+	<include buildfile="conf/default.properties" />
+
+	<!-- do everything: compile, test, dist -->
+	<target name="all">
+		<call target="build" cascade="false"/>
+		<call target="test" cascade="false"/>
+		<call target="dist" cascade="false"/>
+	</target>
+
+	<!-- clean all the projects in this solution -->
+	<target name="clean">
+		<delete dir="${dist}"/>
+		<nant target="clean">
+			<buildfiles>
+				<include name="${src}/*/nant.build" />
+				<include name="${test}/*/nant.build" />
+			</buildfiles>
+		</nant>
+	</target>
+	
+	<!-- build this solution by compiling all of its projects -->
+	<target name="build">
+		<!-- build all the projects -->
+		<nant target="compile">
+			<buildfiles>
+				<include name="${src}/*/nant.build" />
+				<include name="${test}/*/nant.build" />
+			</buildfiles>
+		</nant>
+	</target>
+
+	<!-- run unit tests on all of the projects in this solution -->
+	<target name="test">
+		<nant target="test">
+			<buildfiles>
+				<include name="${src}/*/nant.build" />
+			</buildfiles>
+		</nant>
+	</target>
+	
+	<!-- prepare the solution for distribution. this includes:
+	
+		 - copying the zip files of the projects' binary output to the 
+		   solution's dist directory
+		   
+		 - creating a zip file of the entire solution
+	-->
+	<target name="dist">
+
+		<!-- call the dist target on this solution's projects -->
+		<nant target="dist">
+			<buildfiles>
+				<include name="${src}/*/nant.build" />
+			</buildfiles>
+		</nant>
+		
+		<!-- create the p-->
+		<!-- 
+			copy the zip files of the projects' binary output to the
+			solution's dist directory
+		  -->
+		<copy todir="${dist}" flatten="true">
+			<fileset>
+				<include name="${src}/*/${dist}/*.zip" />
+			</fileset>
+		</copy>
+
+		<!--
+			create a zip file of the entire solution
+		-->
+		<zip zipfile="${dist}/${sol.name.unix}-src-${sol.version}.zip" ziplevel="9">
+			<fileset prefix="${sol.name.unix}-src-${sol.version}">
+				
+				<!-- start by including everything -->
+				<include name="**/*" />
+				
+				<!-- exclude the solution's dist dir -->
+				<exclude name="${dist}/**"/>
+				
+				<!-- exclude VS per-user settings files -->
+				<exclude name="${src}/**/*.user" />
+				<exclude name="${src}/**/*.suo" />
+				<exclude name="${test}/**/*.user" />
+				<exclude name="${test}/**/*.suo" />
+				
+				<!-- exclude R# dirs and files -->
+				<exclude name="**/_ReSharper.DotNetCli/**" />
+				<exclude name="**/*.resharper*" />
+
+				<!-- exlude per-project dist dirs -->
+				<exclude name="${src}/*/${dist}/**" />
+				<exclude name="${test}/*/${dist}/**" />
+
+				<!-- exlude per-project build dirs -->
+				<exclude name="${src}/*/${build}/**"/>
+				<exclude name="${test}/*/${build}/**"/>
+
+				<!-- exlude per-project VS bin dirs -->
+				<exclude name="${src}/*/bin/**"/>
+				<exclude name="${test}/*/bin/**"/>
+
+				<!-- exlude per-project VS obj dirs -->
+				<exclude name="${src}/*/obj/**"/>
+				<exclude name="${test}/*/obj/**"/>
+				
+			</fileset>
+		</zip>
+	</target>
+	
+</project>
